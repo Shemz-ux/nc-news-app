@@ -5,34 +5,40 @@ const convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   return { created_at: new Date(created_at), ...otherProperties };
 };
   
-const formatData = (data) => {
-  const formatted = data.map((object)=> Object.values(object))
-  return formatted
-}
-
-const formatDataTwo = (data) => {
-  const formatted = data.map((object)=> {
-    if (!object.hasOwnProperty('votes')) {
-      object.votes = 0;
-    }
-    const objectFormat = convertTimestampToDate(object)
-    return Object.values(objectFormat)
+const formatTopics = (data) => {
+  const format = data.map(({description, slug, img_url})=> {
+    return [description, slug, img_url]
   })
-  return formatted
+  return format
 }
 
-const createId = (data) => {
-  let idNumber = 1
-  data.map((object) => {
-    if(!object.hasOwnProperty("article_id")){
-      object.article_id = idNumber++
-    }
+const formatUsers = (data) => {
+  const format = data.map(({username, name, avatar_url})=> {
+    return [username, name, avatar_url]
   })
-  return data
+  return format
 }
 
-module.exports = { convertTimestampToDate, formatData, formatDataTwo, createId }
+const formatArticles = (data) => {
+  return data.map((object) => {
+    const { title, topic, author, body, created_at, votes, article_img_url } = convertTimestampToDate(object);
+    return [title, topic, author, body, created_at, votes, article_img_url];
+  });
+}
 
-//I could refactor this to be able to take any key name and do the same, by allowing the function to take two
+const formatComments = (commentData, articleData) => {
+  const lookObj = {}
+  articleData.forEach((article)=> {
+    lookObj[article.title] = article.article_id
+  })
+  return commentData.map((commentObject) => {
+    const formatTime = convertTimestampToDate(commentObject);
+    formatTime.article_id = lookObj[formatTime.article_title]
+    delete formatTime.article_title
+    const {article_id, body, votes, author, created_at} = formatTime
+    return [ article_id, body, votes, author, created_at]
+  });
+}
 
+module.exports = { convertTimestampToDate, formatTopics, formatUsers, formatArticles , formatComments }
 

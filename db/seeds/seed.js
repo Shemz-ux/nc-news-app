@@ -1,5 +1,5 @@
 const db = require("../connection")
-const { formatData, formatDataTwo } = require("./utils")
+const { formatTopics, formatUsers, formatArticles, formatComments } = require("./utils")
 const format = require('pg-format')
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
@@ -16,24 +16,27 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     return users(userData)
   }).then(()=>{
     return articles(articleData)
-  }).then(()=>{
-    return comments(commentData)
+  }).then(({rows})=>{
+    // console.log(rows)
+    return comments(commentData,rows)
   })
 };
+// take the response from articles 
+
 
 function topics(data){
   return db.query(`
     CREATE TABLE topics (
     slug VARCHAR(255) NOT NULL PRIMARY KEY,
-    description VARCHAR(255),
+    description VARCHAR(255) NOT NULL,
     img_url VARCHAR(1000)
     );`)
     .then(()=>{
-      const formattingData = formatData(data)
+      const formatData = formatTopics(data)
       const query = format(`
         INSERT INTO topics
-        (slug, description, img_url)
-        VALUES %L`, formattingData)
+        (description, slug, img_url)
+        VALUES %L RETURNING *`, formatData)
       return db.query(query)
     })
 }
@@ -42,15 +45,15 @@ function users(data){
   return db.query(`
     CREATE TABLE users (
     username VARCHAR(255) NOT NULL PRIMARY KEY,
-    name VARCHAR(100),
+    name VARCHAR(100) NOT NULL,
     avatar_url VARCHAR(1000)
     );`)
     .then(()=>{
-      const formattingData = formatData(data)
+      const formatData = formatUsers(data)
       const query = format(`
         INSERT INTO users
         (username, name, avatar_url)
-         VALUES %L`, formattingData)
+         VALUES %L`, formatData)
       return db.query(query)
     })
 }
@@ -59,39 +62,42 @@ function articles(data){
   return db.query(`
     CREATE TABLE articles (
     article_id SERIAL PRIMARY KEY,
-    title VARCHAR(255),
-    topic VARCHAR(255),
-    author VARCHAR(255),
+    title VARCHAR(255) NOT NULL,
+    topic VARCHAR(255) NOT NULL REFERENCES topics(slug),
+    author VARCHAR(255) NOT NULL REFERENCES users(username),
     body TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     votes INT DEFAULT 0,
-    article_img_url VARCHAR(1000),
-    FOREIGN KEY (author) REFERENCES users(username)
+    article_img_url VARCHAR(1000)
     );`).then(()=>{
-      // ISSUE WITH ONE OF MY FOREIGN KEY (topic) REFERENCES topics(slug)
-      const formattingArticles = formatDataTwo(data)
+      const formatData = formatArticles(data)
       const query = format(`
         INSERT INTO articles
-        (created_at, title, topic, author, body, article_img_url, votes)
-        VALUES %L`, formattingArticles)
+        (title, topic, author, body, created_at, votes, article_img_url)
+        VALUES %L RETURNING *`, formatData)
       return db.query(query)
     })
 }
 
-function comments(data){
+function comments(commentData, articleData){
   return db.query(`
     CREATE TABLE comments (
     comment_id SERIAL PRIMARY KEY,
-    article_id INT NOT NULL,
+    article_id INT REFERENCES articles(article_id),
     body TEXT,
     votes INT NOT NULL DEFAULT 0,
-    author VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (article_id) REFERENCES articles(article_id),
-    FOREIGN KEY (author) REFERENCES users(username)
+    author VARCHAR(255) NOT NULL REFERENCES users(username),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );`).then(()=>{
-      console.log(data)
-    })
-}
+        const formatData = formatComments(commentData, articleData)
+        console.log(formatData)
+        const query = format(`
+          INSERT INTO comments
+          (article_id, body, votes, author, created_at)
+          VALUES %L`, formatData)
+        return db.query(query)
+      })
+  }
+
 
 module.exports = seed;

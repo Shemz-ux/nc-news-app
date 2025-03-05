@@ -1,5 +1,5 @@
 const {
-  convertTimestampToDate, formatData, createId
+  convertTimestampToDate, formatTopics, formatUsers, formatArticles
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -39,7 +39,7 @@ describe("convertTimestampToDate", () => {
   });
 });
 
-describe("formatData", ()=>{
+describe("formatTopics", ()=>{
   test("when given an array of objects, it returns an array of its values", () => {
     const input = [
       { description: "Code is love, code is life", slug: "coding", img_url: "" },
@@ -49,7 +49,7 @@ describe("formatData", ()=>{
         img_url:
           "https://images.pexels.com/photos/209841/pexels-photo-209841.jpeg?w=700&h=700",
       }]
-    const result = formatData(input);
+    const result = formatTopics(input);
     const expected = [
     ["Code is love, code is life", "coding", "" ],
     [ "FOOTIE!", "football", "https://images.pexels.com/photos/209841/pexels-photo-209841.jpeg?w=700&h=700"]
@@ -58,55 +58,67 @@ describe("formatData", ()=>{
   })
 })
 
-describe("adds a new ID key for each object", () => {
-  test("When passed an array of objects, it adds an article key to each object", () => {
+describe("formatUsers", ()=>{
+  test("when given an array of objects, it returns an array of its values", () => {
     const input = [
-      {
-        title: "Running a Node App",
-        topic: "coding",
-        author: "jessjelly",
-        body: "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
-        created_at: 1604728980000,
-        votes: 0,
-        article_img_url:
-          "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700",
+      { 
+        username: "butter_bridge",
+        name: "jonny",
+        avatar_url:
+          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg", 
       },
       {
-        title: "The Rise Of Thinking Machines: How IBM's Watson Takes On The World",
-        topic: "coding",
-        author: "jessjelly",
-        body: "Many people know Watson as the IBM-developed cognitive super computer that won the Jeopardy! gameshow in 2011. In truth, Watson is not actually a computer but a set of algorithms and APIs, and since winning TV fame (and a $1 million prize) IBM has put it to use tackling tough problems in every industry from healthcare to finance. Most recently, IBM has announced several new partnerships which aim to take things even further, and put its cognitive capabilities to use solving a whole new range of problems around the world.",
-        created_at: 1589418120000,
-        votes: 0,
-        article_img_url:
-          "https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?w=700&h=700",
+        username: "icellusedkars",
+        name: "sam",
+        avatar_url: "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
       }]
-
-    const result = createId(input);
-    const expected = [
-      {
-        article_id: 1,
-        title: "Running a Node App",
-        topic: "coding",
-        author: "jessjelly",
-        body: "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
-        created_at: 1604728980000,
-        votes: 0,
-        article_img_url:
-          "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700",
-      },
-      {
-        article_id: 2,
-        title: "The Rise Of Thinking Machines: How IBM's Watson Takes On The World",
-        topic: "coding",
-        author: "jessjelly",
-        body: "Many people know Watson as the IBM-developed cognitive super computer that won the Jeopardy! gameshow in 2011. In truth, Watson is not actually a computer but a set of algorithms and APIs, and since winning TV fame (and a $1 million prize) IBM has put it to use tackling tough problems in every industry from healthcare to finance. Most recently, IBM has announced several new partnerships which aim to take things even further, and put its cognitive capabilities to use solving a whole new range of problems around the world.",
-        created_at: 1589418120000,
-        votes: 0,
-        article_img_url:
-          "https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?w=700&h=700",
-      }]
-
+    const result = formatUsers(input);
+    const expected = 
+    [
+    ["butter_bridge", "jonny", "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"],
+    [ "icellusedkars", "sam", "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"]
+    ];
     expect(result).toEqual(expected)
   })
 })
+
+describe("formatArticles", ()=>{
+  test("when given an array of objects, it returns an array of its values", () => {
+    const input = [
+      {
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: 1594329060000,
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+      {
+        title: "Sony Vaio; or, The Laptop",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "Call me Mitchell. Some years ago..",
+        created_at: 1602828180000,
+        votes: 0,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      }
+    ]
+    const result = formatArticles(input);
+    // console.log(result)
+    const expected = 
+    [
+      ["Living in the shadow of a great man", "mitch", "butter_bridge", "I find this existence challenging", new Date("2020-07-09T21:11:00.000Z"), 100,
+        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      ],
+      ["Sony Vaio; or, The Laptop", "mitch", "icellusedkars", "Call me Mitchell. Some years ago..", new Date("2020-10-16T06:03:00.000Z"), 0,  
+        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      ]
+    ];
+    expect(result).toEqual(expected)
+  })
+})
+
+
