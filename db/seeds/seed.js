@@ -90,7 +90,7 @@ function comments(commentData, articleData){
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );`).then(()=>{
         const formatData = formatComments(commentData, articleData)
-        console.log(formatData)
+        // console.log(formatData)
         const query = format(`
           INSERT INTO comments
           (article_id, body, votes, author, created_at)
