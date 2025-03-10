@@ -59,7 +59,6 @@ describe("GET /api/articles/:article_id", () => {
     .get("/api/articles/4")
     .expect(200)
     .then(({body})=>{
-      console.log(body)
       const {author, title, article_id, created_at, votes, article_img_url } = body.topic
       expect(typeof author).toBe('string')
       expect(typeof title).toBe('string')
@@ -84,7 +83,6 @@ describe("GET /api/articles/:article_id", () => {
     .get("/api/articles/1000")
     .expect(404)
     .then(({body})=>{
-      console.log(body)
       expect(body.msg).toBe('Not found')
     })
   })
