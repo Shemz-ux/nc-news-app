@@ -51,6 +51,17 @@ describe("404 invalid endpoint /api/banana", () => {
       expect(body.msg).toBe('Invalid request')
     })
   })
+
+  test("404: Responds with a 404 error when articles is misspelled", () => {
+    return request(app)
+    .get("/api/artcles")
+    .expect(404)
+    .then(({body})=>{
+      expect(body.msg).toBe('Invalid request')
+    })
+  })
+
+
 })
 
 describe("GET /api/articles/:article_id", () => {
@@ -59,7 +70,7 @@ describe("GET /api/articles/:article_id", () => {
     .get("/api/articles/4")
     .expect(200)
     .then(({body})=>{
-      const {author, title, article_id, created_at, votes, article_img_url } = body.topic
+      const {author, title, article_id, created_at, votes, article_img_url } = body.article
       expect(typeof author).toBe('string')
       expect(typeof title).toBe('string')
       expect(typeof article_id).toBe('number')
@@ -88,14 +99,14 @@ describe("GET /api/articles/:article_id", () => {
   })
 })
 
-describe.skip("GET /api/articles", () => {
+describe("GET /api/articles", () => {
   test("200: Responds with an array of article objects, each of which contain a slug and description", () => {
     return request(app)
     .get("/api/articles")
     .expect(200)
     .then(({body})=>{
       const { articles } = body
-      expect(articles).toBeGreaterThan(0)
+      expect(articles).toHaveLength(13)
       articles.forEach((article)=>{
         expect(typeof article.author).toBe('string')
         expect(typeof article.title).toBe('string')
@@ -104,6 +115,7 @@ describe.skip("GET /api/articles", () => {
         expect(typeof article.created_at).toBe('string')
         expect(typeof article.votes).toBe('number')
         expect(typeof article.article_img_url).toBe('string')
+        expect(typeof article.comment_count).toBe('number')
       })
     })
   })
