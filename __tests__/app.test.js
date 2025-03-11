@@ -196,7 +196,62 @@ describe("POST /api/articles/:article_id/comments", () => {
       expect(body.msg).toBe('Not found')
     })
   })
+})
 
-  
+describe("PATCH /api/articles/:article_id", () => {
+  test("201: Responds with an object containing the updated article with vote increased by 5", () => {
+    return request(app)
+    .patch("/api/articles/4")
+    .send({inc_votes: 5 })
+    .expect(201)
+    .then(({body})=>{
+      const {article} = body
+      expect(article.article_id).toBe(4)
+      expect(article.votes).toBe(5)
+    })
+  })
+
+  test("201: Responds with an object containing the updated article with vote decreased by -100", () => {
+    return request(app)
+    .patch("/api/articles/6")
+    .send({inc_votes: -100 })
+    .expect(201)
+    .then(({body})=>{
+      const {article} = body
+      expect(article.article_id).toBe(6)
+      expect(article.votes).toBe(-100)
+    })
+  })
+
+  test("400: Returns an error due to an invalid article_id", () => {
+    return request(app)
+    .patch("/api/articles/hi")
+    .send({inc_votes: 5 })
+    .expect(400)
+    .then(({body})=>{
+      expect(body.msg).toBe('Invalid request')
+    })
+  })
+
+  test("400: Returns an error due to an invalid inc_votes value", () => {
+    return request(app)
+    .patch("/api/articles/4")
+    .send({inc_votes: 'abc' })
+    .expect(400)
+    .then(({body})=>{
+      expect(body.msg).toBe('Invalid request')
+    })
+  })
+
+  test("404: Returns an error due to article id not existing", () => {
+    return request(app)
+    .patch("/api/articles/1000")
+    .send({inc_votes: 5 })
+    .expect(404)
+    .then(({body})=>{
+      expect(body.msg).toBe('Not found')
+    })
+  })
+
 })
 
