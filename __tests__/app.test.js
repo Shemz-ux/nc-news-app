@@ -138,12 +138,12 @@ describe("GET /api/articles/:article_id/comment", () => {
         expect(typeof comment.created_at).toBe('string')
         expect(typeof comment.author).toBe('string')
         expect(typeof comment.body).toBe('string')
-        expect(typeof comment.article_id).toBe('number')
+        expect(comment.article_id).toBe(3)
       })
     })
   })
 
-  test("400: Returns an error due to an invalid request being made to the server", () => {
+  test("400: Returns an error due to an invalid article_id", () => {
     return request(app)
     .get("/api/articles/hello/comments")
     .expect(400)
@@ -161,3 +161,42 @@ describe("GET /api/articles/:article_id/comment", () => {
     })
   })
 })
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("200: Responds with an object containing details of the posted comments", () => {
+    return request(app)
+    .post("/api/articles/3/comments")
+    .send({ username: 'Test subject', body: 'northcoders' })
+    .expect(201)
+    .then(({ body })=>{
+      const {author, comment_id, article_id, votes} = body.newComment
+      expect(comment_id).toBe(19)
+      expect(article_id).toBe(3)
+      expect(votes).toBe(0)
+      expect(author).toBe('icellusedkars')
+    })
+  })
+
+  test("400: Returns an error due to an invalid article_id", () => {
+    return request(app)
+    .post("/api/articles/hellow/comments")
+    .send({ username: 'Test subject', body: 'northcoders' })
+    .expect(400)
+    .then(({body})=>{
+      expect(body.msg).toBe('Invalid request')
+    })
+  })
+
+  test("404: Returns an error due to client trying to post a comment for an article that does not exist", () => {
+    return request(app)
+    .post("/api/articles/1000/comments")
+    .send({ username: 'Test subject', body: 'northcoders' })
+    .expect(404)
+    .then(({body})=>{
+      expect(body.msg).toBe('Not found')
+    })
+  })
+
+  
+})
+

@@ -9,3 +9,12 @@ exports.fetchCommentsByArticleId = (id) => {
         return rows
     })
 }
+
+exports.insertCommentByArticleId = (comment) => {
+    const {article_id, body, author} = comment
+    return db.query(`INSERT INTO comments (article_id, body, author)
+VALUES ($1, $2, $3) RETURNING *`, [article_id, body, author]).then(({rows})=>{
+    return rows[0]
+})
+}
+
