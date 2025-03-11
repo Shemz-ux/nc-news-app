@@ -255,3 +255,14 @@ describe("PATCH /api/articles/:article_id", () => {
 
 })
 
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Responds with 204 and message stating no content", () =>{
+    return request(app)
+    .delete("/api/comments/2")
+    .expect(204)
+    .then(({res})=>{
+      console.log(res.statusMessage)
+      expect(res.statusMessage).toBe('No Content')
+    })
+  })
+})
