@@ -40,5 +40,20 @@ const formatComments = (commentData, articleData) => {
   });
 }
 
-module.exports = { convertTimestampToDate, formatTopics, formatUsers, formatArticles , formatComments }
+const lookUpObject = (table, column, value) => {
+  return db.query(`SELECT * FROM ${table} WHERE ${column} = ${value}`).then(({rows})=>{
+    return rows[0]
+  })
+
+}
+
+const lookUpByUsername = (id) => {
+  return db.query(`SELECT * FROM users
+      JOIN comments ON comments.author = users.username
+      WHERE comments.article_id = $1`, [id])
+  .then(({rows})=>{
+  return rows
+})
+}
+module.exports = { convertTimestampToDate, formatTopics, formatUsers, formatArticles , formatComments, lookUpObject, lookUpByUsername }
 
