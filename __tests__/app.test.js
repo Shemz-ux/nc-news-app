@@ -142,4 +142,22 @@ describe("GET /api/articles/:article_id/comment", () => {
       })
     })
   })
+
+  test("400: Returns an error due to an invalid request being made to the server", () => {
+    return request(app)
+    .get("/api/articles/hello/comments")
+    .expect(400)
+    .then(({body})=>{
+      expect(body.msg).toBe('Invalid request')
+    })
+  })
+
+  test("404: Returns an error when asked to find a comment for an article id that does not exist", () => {
+    return request(app)
+    .get("/api/articles/1000/comments")
+    .expect(404)
+    .then(({body})=>{
+      expect(body.msg).toBe('Not found')
+    })
+  })
 })
