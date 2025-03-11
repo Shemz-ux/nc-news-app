@@ -3,6 +3,7 @@ const request = require("supertest")
 const app = require("../app.js")
 const db = require("../db/connection.js")
 const data = require("../db/data/test-data")
+require('jest-sorted')
 const seed = require("../db/seeds/seed.js")
 
 /* Set up your beforeEach & afterAll functions here */
@@ -42,7 +43,7 @@ describe("GET /api/topics", () => {
   })
 })
 
-describe("404 invalid endpoint /api/banana", () => {
+describe("404 invalid endpoints", () => {
   test("404: Responds with a 404 error when an invalid request is made to this endpoint", () => {
     return request(app)
     .get("/api/bananas")
@@ -100,13 +101,14 @@ describe("GET /api/articles/:article_id", () => {
 })
 
 describe("GET /api/articles", () => {
-  test("200: Responds with an array of article objects, each of which contain a slug and description", () => {
+  test("200: Responds with an array of article objects in correct order", () => {
     return request(app)
     .get("/api/articles")
     .expect(200)
     .then(({body})=>{
       const { articles } = body
       expect(articles).toHaveLength(13)
+      expect(articles).toBeSorted({ descending: true, key: 'created_at' })
       articles.forEach((article)=>{
         expect(typeof article.author).toBe('string')
         expect(typeof article.title).toBe('string')
@@ -117,6 +119,45 @@ describe("GET /api/articles", () => {
         expect(typeof article.article_img_url).toBe('string')
         expect(typeof article.comment_count).toBe('number')
       })
+    })
+  })
+})
+
+describe("GET /api/articles/:article_id/comment", () => {
+  test("200: Responds with an array of comment objects", () => {
+    return request(app)
+    .get("/api/articles/3/comments")
+    .expect(200)
+    .then(({body})=>{
+      const { comments } = body
+      expect(comments.length).toBeGreaterThan(0)
+      expect(comments).toBeSorted({ descending: true, key: 'created_at' })
+      comments.forEach((comment)=>{
+        expect(typeof comment.comment_id).toBe('number')
+        expect(typeof comment.votes).toBe('number')
+        expect(typeof comment.created_at).toBe('string')
+        expect(typeof comment.author).toBe('string')
+        expect(typeof comment.body).toBe('string')
+        expect(typeof comment.article_id).toBe('number')
+      })
+    })
+  })
+
+  test("400: Returns an error due to an invalid request being made to the server", () => {
+    return request(app)
+    .get("/api/articles/hello/comments")
+    .expect(400)
+    .then(({body})=>{
+      expect(body.msg).toBe('Invalid request')
+    })
+  })
+
+  test("404: Returns an error when asked to find a comment for an article id that does not exist", () => {
+    return request(app)
+    .get("/api/articles/1000/comments")
+    .expect(404)
+    .then(({body})=>{
+      expect(body.msg).toBe('Not found')
     })
   })
 })
