@@ -255,3 +255,31 @@ describe("PATCH /api/articles/:article_id", () => {
 
 })
 
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Responds with 204 and message stating no content", () =>{
+    return request(app)
+    .delete("/api/comments/2")
+    .expect(204)
+    .then(({res})=>{
+      expect(res.statusMessage).toBe('No Content')
+    })
+  })
+
+  test("400: Responds with 400 error due to an invalid comment_id being used to delete data", () =>{
+    return request(app)
+    .delete("/api/comments/abc")
+    .expect(400)
+    .then(({body})=>{
+      expect(body.msg).toBe('Invalid request')
+    })
+  })
+
+  test("404: Responds with 404 error as comment being deleted does not exist", () =>{
+    return request(app)
+    .delete("/api/comments/1000")
+    .expect(404)
+    .then(({body})=>{
+      expect(body.msg).toBe('Not found')
+    })
+  })
+})

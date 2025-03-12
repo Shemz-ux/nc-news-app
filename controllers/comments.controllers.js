@@ -1,5 +1,5 @@
 const { lookUpByUsername } = require("../db/seeds/utils")
-const { fetchCommentsByArticleId, insertCommentByArticleId } = require("../models/comments.models")
+const { fetchCommentsByArticleId, insertCommentByArticleId, removeCommentById } = require("../models/comments.models")
 const { checkArticleExists } = require("../models/filter.articles")
 
 exports.getCommentsByArticleId = (req, res, next) => {
@@ -32,6 +32,15 @@ exports.postCommentByArticleId = (req, res, next) => {
                 res.status(201).send({newComment: newComment} )
             })
         })
+    }).catch((err)=>{
+        next(err)
+    })
+}
+
+exports.deleteCommentById = (req, res, next) => {
+    const {comment_id} = req.params
+    removeCommentById(comment_id).then((response)=>{
+        res.status(204).send()
     }).catch((err)=>{
         next(err)
     })
