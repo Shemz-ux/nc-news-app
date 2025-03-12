@@ -1,5 +1,4 @@
 const db = require("../db/connection")
-const format = require("")
 
 exports.fetchArticleById = (id) => {
     return db.query(`SELECT articles.*, COUNT(comments.comment_id)::INT AS comment_count 

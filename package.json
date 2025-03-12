@@ -9,9 +9,10 @@
     "test": "jest --runInBand",
     "prepare": "husky install",
     "start": "node listen.js",
-    "seed-prod": "NODE_ENV=production npm run seed",
     "test-seed": "jest seed.test.js",
-    "utils-test": "npm t __tests__/utils.test.js"
+    "utils-test": "npm t __tests__/utils.test.js",
+    "seed-prod": "NODE_ENV=production npm run seed-dev",
+    "seed": "npm run seed-dev"
   },
   "repository": {
     "type": "git",
