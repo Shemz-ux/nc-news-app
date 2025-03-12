@@ -100,7 +100,7 @@ describe("GET /api/articles/:article_id", () => {
   })
 })
 
-describe.only("GET /api/articles", () => {
+describe("GET /api/articles", () => {
   test("200: Responds with an array of article objects in correct order", () => {
     return request(app)
     .get("/api/articles")
@@ -162,20 +162,40 @@ describe.only("GET /api/articles", () => {
       .get("/api/articles?sort_by=article_id&order=asc")
       .expect(200)
       .then(({body})=>{
+        console.log(body.articles)
           expect(body.articles).toBeSorted({descending: false, key: 'article_id'})
         })
       })
 
-      test("400: Throws an error when given an invalid query statement due to mispellings", () => {
+    test("400: Throws an error when given an invalid query statement due to mispellings", () => {
+      return request(app)
+      .get("/api/articles?sort_by=artecle_id&order=asc")
+      .expect(400)
+      .then(({body})=>{
+          expect(body.msg).toBe('Invalid query')
+        })
+      })
+
+    test("200: Responds with an array of objects which filters the articles by the topic 'mitch' ", ()=>{
         return request(app)
-        .get("/api/articles?sort_by=artecle_id&order=asc")
-        .expect(400)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
         .then(({body})=>{
-            expect(body.msg).toBe('Invalid query')
+          body.articles.forEach((article)=>{
+            expect(article.topic).toBe('mitch')
           })
         })
-  })
+    })
 
+    test("400: throws an error when an invalid topic is used to filter through the articles ", ()=>{
+      return request(app)
+      .get("/api/articles?topic=apple")
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe('Invalid query')
+      })
+  })
+  })
 
 describe("GET /api/articles/:article_id/comment", () => {
   test("200: Responds with an array of comment objects", () => {
