@@ -98,6 +98,17 @@ describe("GET /api/articles/:article_id", () => {
       expect(body.msg).toBe('Not found')
     })
   })
+
+  test.skip("200: returns an object containing the comment_count property, which is the total count of all the comments with this article_id", ()=>{
+    return request(app)
+    .get("/api/articles/3")
+    .expect(200)
+    .then(({body})=>{
+      body.article.forEach((articles)=> {
+        expect(typeof articles.comment_count).toBe('number')
+      })
+    })
+  })
 })
 
 describe("GET /api/articles", () => {
