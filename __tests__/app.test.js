@@ -100,7 +100,7 @@ describe("GET /api/articles/:article_id", () => {
   })
 })
 
-describe("GET /api/articles", () => {
+describe.only("GET /api/articles", () => {
   test("200: Responds with an array of article objects in correct order", () => {
     return request(app)
     .get("/api/articles")
@@ -121,7 +121,61 @@ describe("GET /api/articles", () => {
       })
     })
   })
-})
+  test("200: Responds with an array of articles sorted by the created_at columns which defaults to descending", () => {
+    return request(app)
+  .get("/api/articles?sort_by=created_at")
+    .expect(200)
+    .then(({body})=>{
+        expect(body.articles).toBeSorted({descending: true, key: 'created_at'})
+      })
+    })
+
+    test("200: Responds with an array of articles sorted by the article_id in descending order", () => {
+      return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then(({body})=>{
+          expect(body.articles).toBeSorted({descending: true, key: 'article_id'})
+        })
+      })
+
+    test("200: Responds with an array of articles sorted by the votes from highest to lowest vote", () => {
+      return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({body})=>{
+          expect(body.articles).toBeSorted({descending: true, key: 'votes'})
+        })
+      })
+
+    test("200: Responds with an array of articles sorted by the date, in ascending order when an order query is used", () => {
+      return request(app)
+      .get("/api/articles?sort_by=created_at&order=asc")
+      .expect(200)
+      .then(({body})=>{
+          expect(body.articles).toBeSorted({descending: false, key: 'created_at'})
+        })
+      })
+
+    test("200: Responds with an array of articles sorted by the article_id, in ascending order when an order query is used", () => {
+      return request(app)
+      .get("/api/articles?sort_by=article_id&order=asc")
+      .expect(200)
+      .then(({body})=>{
+          expect(body.articles).toBeSorted({descending: false, key: 'article_id'})
+        })
+      })
+
+      test("400: Throws an error when given an invalid query statement due to mispellings", () => {
+        return request(app)
+        .get("/api/articles?sort_by=artecle_id&order=asc")
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Invalid query')
+          })
+        })
+  })
+
 
 describe("GET /api/articles/:article_id/comment", () => {
   test("200: Responds with an array of comment objects", () => {

@@ -10,12 +10,37 @@ exports.fetchArticleById = (id) => {
     })
 }
  
-exports.fetchArticles = () => {
-    return db.query(`SELECT articles.*, COUNT(comments.comment_id)::INT AS comment_count 
+exports.fetchArticles = (query) => {
+    let queryStr = `
+        SELECT articles.*, COUNT(comments.comment_id)::INT AS comment_count 
         FROM articles 
-        LEFT JOIN comments ON articles.article_id = comments.article_id
+        LEFT JOIN comments ON articles.article_id = comments.article_id 
         GROUP BY articles.article_id
-        ORDER BY articles.created_at DESC;`).then(({rows})=>{
+    `;
+
+    const validSortColumns = ["created_at", "article_id", "votes"]
+    const validOrderOptions = ["asc", "desc"]
+
+    let sortBy = "created_at"
+    let order = "desc"
+
+    if (query.sort_by) {
+        if (!validSortColumns.includes(query.sort_by)) {
+            return Promise.reject({ status: 400, msg: "Invalid query" });
+        }
+        sortBy = query.sort_by;
+    }
+
+    if (query.order) {
+        if (!validOrderOptions.includes(query.order.toLowerCase())) {
+            return Promise.reject({ status: 400, msg: "Invalid query" });
+        }
+        order = query.order.toLowerCase();
+    }
+
+    queryStr += ` ORDER BY articles.${sortBy} ${order}`;
+
+    return db.query(queryStr).then(({ rows }) => {
         return rows
     })
 }
