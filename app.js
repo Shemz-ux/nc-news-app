@@ -4,6 +4,7 @@ const endpoints = require('./endpoints.json')
 const { getTopics } = require('./controllers/topics.controllers')
 const { getArticleById, getArticles, patchArticleById } = require('./controllers/articles.controllers')
 const { getCommentsByArticleId, postCommentByArticleId, deleteCommentById } = require('./controllers/comments.controllers')
+const { getUsers } = require('./controllers/users.controllers')
 const { serverErrorHandler, psqlErrorHandler, customErrorHandler } = require('./controllers/errors.controllers')
 
 app.use(express.json())
@@ -26,7 +27,9 @@ app.patch("/api/articles/:article_id", patchArticleById)
 
 app.delete("/api/comments/:comment_id", deleteCommentById)
 
-app.all("/*", (req, res) => {
+app.get("/api/users", getUsers)
+
+app.all("*", (req, res) => {
     res.status(404).send({msg: 'Invalid request'})
 })
 
