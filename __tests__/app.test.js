@@ -99,14 +99,14 @@ describe("GET /api/articles/:article_id", () => {
     })
   })
 
-  test.skip("200: returns an object containing the comment_count property, which is the total count of all the comments with this article_id", ()=>{
+  test("200: returns an object containing the comment_count property, which is the total count of all the comments with this article_id", ()=>{
     return request(app)
     .get("/api/articles/3")
     .expect(200)
     .then(({body})=>{
-      body.article.forEach((articles)=> {
-        expect(typeof articles.comment_count).toBe('number')
-      })
+      const {comment_count} = body.article
+      expect(typeof comment_count).toBe('number')
+      expect(comment_count).toBe(2)
     })
   })
 })
@@ -173,7 +173,6 @@ describe("GET /api/articles", () => {
       .get("/api/articles?sort_by=article_id&order=asc")
       .expect(200)
       .then(({body})=>{
-        console.log(body.articles)
           expect(body.articles).toBeSorted({descending: false, key: 'article_id'})
         })
       })
