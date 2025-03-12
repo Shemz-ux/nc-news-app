@@ -283,3 +283,29 @@ describe("DELETE /api/comments/:comment_id", () => {
     })
   })
 })
+
+describe("GET /api/users", () => {
+  test("200: Responds with an array of objects containing the username, name and avatar properties", ()=>{
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then(({body})=>{
+      expect(body.users).toHaveLength(4)
+      body.users.forEach((user)=>{
+        expect(typeof user.username).toBe('string')
+        expect(typeof user.name).toBe('string')
+        expect(typeof user.avatar_url).toBe('string')
+      })
+
+    })
+  })
+
+  test("404: Responds with 404 error due mispelling the users endpoint (caught by app.all function)", () =>{
+    return request(app)
+    .get("/api/usrs")
+    .expect(404)
+    .then(({body})=>{
+      expect(body.msg).toBe('Invalid request')
+    })
+  })
+})
