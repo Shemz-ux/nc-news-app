@@ -8,11 +8,11 @@
     "seed-dev": "node ./db/seeds/run-seed.js",
     "test": "jest --runInBand",
     "prepare": "husky install",
-    "start": "node listen.js",
+    "start": "nodemon listen.js",
     "test-seed": "jest seed.test.js",
     "utils-test": "npm t __tests__/utils.test.js",
     "seed-prod": "NODE_ENV=production npm run seed-dev",
-    "seed": "npm run seed-dev"
+    "start-prod": "NODE_ENV=production npm run start"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "jest": "^27.5.1",
     "jest-extended": "^2.0.0",
     "jest-sorted": "^1.0.15",
+    "nodemon": "^3.1.9",
     "supertest": "^7.0.0"
   },
   "dependencies": {
