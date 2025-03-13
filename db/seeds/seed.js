@@ -17,11 +17,9 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
   }).then(()=>{
     return articles(articleData)
   }).then(({rows})=>{
-    // console.log(rows)
     return comments(commentData,rows)
   })
 };
-// take the response from articles 
 
 
 function topics(data){
@@ -90,7 +88,6 @@ function comments(commentData, articleData){
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );`).then(()=>{
         const formatData = formatComments(commentData, articleData)
-        // console.log(formatData)
         const query = format(`
           INSERT INTO comments
           (article_id, body, votes, author, created_at)

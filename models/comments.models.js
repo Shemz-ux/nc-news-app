@@ -35,7 +35,6 @@ exports.updateComment = (id, inc_votes) => {
         if (rows.length === 0){
             return Promise.reject({status: 404, msg: 'Not found'})
         }
-        console.log(rows)
         return rows[0]
     })
 }

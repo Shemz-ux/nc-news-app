@@ -247,7 +247,7 @@ describe("GET /api/articles/:article_id/comment", () => {
 })
 
 describe("POST /api/articles/:article_id/comment", () => {
-  test("200: Responds with an object containing details of the posted comments", () => {
+  test("201: Responds with an object containing details of the posted comments", () => {
     return request(app)
     .post("/api/articles/3/comments")
     .send({ username: 'Test subject', body: 'northcoders' })
@@ -454,3 +454,20 @@ describe("PATCH /api/comments/:comment_id", () => {
 
 })
 
+describe.skip("POST /api/articles", () => {
+  test("200 Responds with with an object containing posted data with the article_img_url", () => {
+    return request(app)
+    .post("/api/articles")
+    .send({
+      author: "test author",
+      title: "Having a great day",
+      body: "Everything is awesome",
+      topic: "northcoders",
+      article_img_url:"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+    })
+    .expect(201)
+    .then(({body})=>{
+      // comeplete the test
+    })
+  })
+})
