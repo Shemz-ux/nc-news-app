@@ -9,7 +9,6 @@ apiRouter.use("/articles", articlesRouter)
 apiRouter.use("/comments", commentsRouter)
 apiRouter.use("/users", usersRouter)
 apiRouter.use("/topics", topicsRouter)
-
 apiRouter.get("/", (req, res) => {
     res.status(200).send({endpoints});
   })

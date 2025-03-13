@@ -393,3 +393,29 @@ describe("GET /api/users", () => {
     })
   })
 })
+
+describe("GET /api/users/:username", () => {
+  test("200 Responds with an object containing data pertaining to a user", () => {
+    return request(app)
+    .get("/api/users/icellusedkars")
+    .expect(200)
+    .then(({body})=>{
+      expect(body.user).toMatchObject({
+        username: "icellusedkars",
+        name: "sam",
+        avatar_url: "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+      })
+    })
+  })
+
+  test("400: Responds with 404 error user not found due to an invalid ID being entered", () =>{
+    return request(app)
+    .get("/api/users/1234")
+    .expect(404)
+    .then(({body})=>{
+      expect(body.msg).toBe('User not found')
+    })
+  })
+  
+})
+
