@@ -419,3 +419,38 @@ describe("GET /api/users/:username", () => {
   
 })
 
+describe("PATCH /api/comments/:comment_id", () => {
+  test("201: Responds with an object containing the updated comment", () => {
+    return request(app)
+    .patch("/api/comments/4")
+    .send({inc_votes: 105 })
+    .expect(201)
+    .then(({body})=>{
+      const {comment} = body
+      expect(comment.comment_id).toBe(4)
+      expect(comment.votes).toBe(5)
+    })
+  })
+
+  test("400: Returns an error due to an invalid comment id", () => {
+    return request(app)
+    .patch("/api/comments/abcc")
+    .send({inc_votes: 105 })
+    .expect(400)
+    .then(({body})=>{
+      expect(body.msg).toBe('Invalid request')
+    })
+  })
+
+  test("404: Returns an error due to an invalid comment id", () => {
+    return request(app)
+    .patch("/api/comments/100")
+    .send({inc_votes: 105 })
+    .expect(404)
+    .then(({body})=>{
+      expect(body.msg).toBe('Not found')
+    })
+  })
+
+})
+
