@@ -1,22 +1,96 @@
-# NC News Seeding
+# 📰 SD NC News API
 
-Basic setup
-- install all depencies by typing 'npm install' in your terminal
+A RESTful API for a news aggregation platform, allowing users to retrieve articles, topics, comments, and more.
 
-- create two files within the repo at the parent level:
-    - .env.development
-    - .env.test
-note: these files, will connect you to a specific data base [test/dev], based on what environment you are running in.
+🌍 Hosted Version: Northcoders News API
 
-- inside the .env.test file create a statement to connect to the test database, PGDATABASE = nc_news_test (no semi colons)
+## Project Overview
 
-- inside the .env.development file create a statement to connect to the development database, PGDATABASE = nc_news (no semi colons)
+This project is a backend service built with Node.js, Express, and PostgreSQL. It provides endpoints to retrieve, post, update, and delete news-related data such as articles, topics, users, and comments.
 
-Running tests using jest:
-- Once files have been created and set up, run the test file script, npm run test-seed, and you should see that you are connected to nc_news_test database. You can then use the jest command npm test or npm t, to run your test suites
+## Setup Instructions
 
-Making requests in developments (client simulation):
-- typing 'npm run seed-dev' in your terminal to seed the databases with data. 
-- then type the command `npm run start` which will allow you to make various requests to the db using a client simulator like insomnia or postman
+### 1️⃣ Clone the Repository
 
+- clone the repo:
+``` git clone https://github.com/Shemz-ux/nc-news-app.git ```
 
+cd northcoders-news-be
+
+### 2️⃣ Install Dependencies
+
+- Ensure you have Node.js v16+ and PostgreSQL v14+ installed, then run:
+
+```npm install```
+
+### 3️⃣ Set Up Environment Variables
+
+#### Create two .env files in the project root:
+
+ - ✅ .env.development
+
+```PGDATABASE=nc_news``` (no semi-colons)
+
+- ✅ .env.test
+
+```PGDATABASE=nc_news_test``` (no semi-colons)
+
+✅ Ensure these files are added to .gitignore to prevent exposing credentials.
+
+Note: these files, will connect you to a specific data base [test/dev], based on what environment you are running in.
+
+## Database Setup & Seeding
+
+### 4️⃣ Create the Databases
+
+Run the following command to set up the development and test databases:
+
+```npm run setup-dbs```
+
+### 5️⃣ Seed the Development Database
+
+```npm run seed-dev```
+
+## Running Tests
+
+- To verify functionality and error handling, run:
+
+```npm test```
+
+- For specific test files:
+
+```npm run test-seed```
+```npm run app-test```
+
+## Running the Server Locally
+
+### 6️⃣ Start the Server
+
+- Run:
+```npm run start```
+
+By default, it will run on port 9090, which will allow you to make various requests to the db using a client simulator like insomnia or postman
+
+## API Endpoints
+
+For a full list of available endpoints and their descriptions, visit:
+
+- GET /api
+
+Example: View ```endpoints.json```
+
+## Tech Stack
+
+- **Backend**: Node.js, Express.js
+
+- **Database**: PostgreSQL, node-postgres (pg)
+
+- **Testing**: Jest, Supertest
+
+- **Hosting**: Supabase (DB), Render (API)
+
+## Minimum Requirements
+
+- Node.js: v16+
+
+- PostgreSQL: v14+

@@ -454,20 +454,77 @@ describe("PATCH /api/comments/:comment_id", () => {
 
 })
 
-describe.skip("POST /api/articles", () => {
-  test("200 Responds with with an object containing posted data with the article_img_url", () => {
+describe("POST /api/articles", () => {
+  test("201 Responds with with an object containing posted data with the article_img_url", () => {
     return request(app)
     .post("/api/articles")
     .send({
-      author: "test author",
+      author: "butter_bridge",
       title: "Having a great day",
       body: "Everything is awesome",
-      topic: "northcoders",
+      topic: "mitch",
       article_img_url:"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
     })
     .expect(201)
     .then(({body})=>{
-      // comeplete the test
+      const {author, article_id, topic, votes, comment_count} = body.newArticle
+      expect(author).toBe("butter_bridge")
+      expect(article_id).toBe(14)
+      expect(votes).toBe(0)
+      expect(topic).toBe('mitch')
+      expect(comment_count).toBe(0)
     })
   })
+
+  test("201 Responds with with an object which contains a default when article_im_url is not given", () => {
+    return request(app)
+    .post("/api/articles")
+    .send({
+      author: "butter_bridge",
+      title: "Having a great day",
+      body: "Everything is awesome",
+      topic: "mitch"
+    })
+    .expect(201)
+    .then(({body})=>{
+      const {author, article_id, topic, votes, comment_count, article_img_url} = body.newArticle
+      expect(author).toBe("butter_bridge")
+      expect(article_id).toBe(14)
+      expect(votes).toBe(0)
+      expect(topic).toBe('mitch')
+      expect(comment_count).toBe(0)
+      expect(article_img_url).toBe('https://default-image-url.com/default.jpg')
+    })
+  })
+
+  test("400 Throws error when incorrect data type is used to insert article data", () => {
+    return request(app)
+    .post("/api/articles")
+    .send({
+      author: "butter_bridge",
+      title: "Having a great day",
+      body: "Everything is awesome",
+      topic: 5000
+    })
+    .expect(400)
+    .then(({body})=>{
+      expect(body.msg).toBe('Invalid insertion')
+    })
+  })
+
+  test("400 Throws error due to missing data field in the insertion", () => {
+    return request(app)
+    .post("/api/articles")
+    .send({
+      title: "Having a great day",
+      body: "Everything is awesome",
+      topic: 5000
+    })
+    .expect(400)
+    .then(({body})=>{
+      expect(body.msg).toBe('Missing data field')
+    })
+  })
+
+
 })

@@ -3,6 +3,17 @@ exports.psqlErrorHandler = (err, req, res, next) => {
     if (err.code === '22P02'){
         res.status(400).send({msg: 'Invalid request'})
     }
+
+    if (err.code === '23503'){
+        res.status(400).send({msg: 'Invalid insertion'})
+    }
+
+    if (err.code === '23502'){
+        res.status(400).send({msg: 'Missing data field'})
+    }
+
+
+    console.log(err.code)
     next(err)
 }
 
