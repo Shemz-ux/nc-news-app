@@ -1,5 +1,5 @@
 // const express = require("express")
-const { fetchTopics, fetchArticleById } = require("../models/topics.model.js")
+const { fetchTopics, insertTopic } = require("../models/topics.model.js")
 
 
 exports.getTopics = (req, res) => {
@@ -8,3 +8,11 @@ exports.getTopics = (req, res) => {
     })
 }
 
+exports.postTopic = (req, res, next) => {
+    const newTopic = req.body
+    insertTopic(newTopic).then((topic)=>{
+        res.status(201).send({newTopic: topic})
+    }).catch((err)=>{
+        next(err)
+    })
+}

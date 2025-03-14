@@ -48,6 +48,12 @@ exports.fetchArticles = (query) => {
 
     queryStr += ` GROUP BY articles.article_id ORDER BY articles.${sortBy} ${order}`;
 
+    if(query.limit) {
+        console.log(query.limit)
+        queryStr += ` LIMIT 10`
+    }
+
+
     return db.query(queryStr, queryValues).then(({ rows }) => {
         if (rows.length === 0){
             return Promise.reject({status: 400, msg: 'Invalid query'})

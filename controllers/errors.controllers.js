@@ -11,9 +11,6 @@ exports.psqlErrorHandler = (err, req, res, next) => {
     if (err.code === '23502'){
         res.status(400).send({msg: 'Missing data field'})
     }
-
-
-    console.log(err.code)
     next(err)
 }
 

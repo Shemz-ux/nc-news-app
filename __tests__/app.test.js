@@ -43,6 +43,28 @@ describe("GET /api/topics", () => {
   })
 })
 
+describe("Post /api/topics",() => {
+    test("201 Responds with with an object containing posted topic data", () => {
+      return request(app)
+      .post("/api/topics")
+      .send({
+        slug: "Shem",
+        description: "The myth the legend",
+        img_url:""
+      })
+      .expect(201)
+      .then(({body})=>{
+        const {slug, description, img_url} = body.newTopic
+        expect(slug).toBe('Shem')
+        expect(description).toBe('The myth the legend')
+        expect(img_url).toBe("")
+      })
+  })
+
+})
+
+
+
 describe("404 invalid endpoints", () => {
   test("404: Responds with a 404 error when an invalid request is made to this endpoint", () => {
     return request(app)
@@ -205,6 +227,7 @@ describe("GET /api/articles", () => {
         expect(body.msg).toBe('Invalid query')
       })
   })
+
   })
 
 describe("GET /api/articles/:article_id/comment", () => {
@@ -525,6 +548,4 @@ describe("POST /api/articles", () => {
       expect(body.msg).toBe('Missing data field')
     })
   })
-
-
 })

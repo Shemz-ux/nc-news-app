@@ -15,3 +15,11 @@ exports.fetchArticleById = (id) => {
         return rows[0]
     })
 }
+
+exports.insertTopic = (newTopic) => {
+    const {slug, description, img_url} = newTopic
+    return db.query(`INSERT INTO topics (slug, description, img_url)
+        VALUES ($1, $2, $3) RETURNING *`, [slug, description, img_url]).then(({rows})=>{
+            return rows[0]
+        })
+}
