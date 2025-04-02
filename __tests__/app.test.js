@@ -270,17 +270,18 @@ describe("GET /api/articles/:article_id/comment", () => {
 })
 
 describe("POST /api/articles/:article_id/comment", () => {
-  test.skip("201: Responds with an object containing details of the posted comments", () => {
+  test("201: Responds with an object containing details of the posted comments", () => {
     return request(app)
     .post("/api/articles/3/comments")
-    .send({ username: 'Test subject', body: 'northcoders' })
+    .send({ username: 'butter_bridge', body: 'northcoders' })
     .expect(201)
     .then(({ body })=>{
       const {author, comment_id, article_id, votes} = body.newComment
+      console.log(body.newComment)
       expect(comment_id).toBe(19)
       expect(article_id).toBe(3)
       expect(votes).toBe(0)
-      expect(author).toBe('icellusedkars')
+      expect(author).toBe('butter_bridge')
     })
   })
 

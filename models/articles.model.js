@@ -98,7 +98,6 @@ exports.insertArticle = (newArticle) => {
         );
     })
     .then(({ rows }) => {
-        console.log(rows)
         return rows[0]}) 
 }
 

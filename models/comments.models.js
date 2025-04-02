@@ -6,7 +6,6 @@ exports.fetchCommentsByArticleId = (id) => {
         WHERE articles.article_id = $1
         ORDER BY articles.created_at DESC`, [id])
     .then(({rows})=>{
-        console.log(rows)
         return rows
     })
 }

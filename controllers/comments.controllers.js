@@ -20,7 +20,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
 exports.postCommentByArticleId = (req, res, next) => {
     const {article_id} = req.params
-    const comment = req.body
+    const {body, username} = req.body
     // checkArticleExists(article_id).then(()=>{
     //     lookUpByUsername(article_id).then((rows)=>{
     //         const {author} = rows[0]
@@ -39,8 +39,8 @@ exports.postCommentByArticleId = (req, res, next) => {
         .then(() => {
             const newComment = {
                 article_id,
-                body,
-                author
+                author: username,
+                body: body,
             };
             return insertCommentByArticleId(newComment);
         })
