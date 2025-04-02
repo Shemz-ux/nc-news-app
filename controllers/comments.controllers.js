@@ -21,20 +21,35 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.postCommentByArticleId = (req, res, next) => {
     const {article_id} = req.params
     const comment = req.body
-    checkArticleExists(article_id).then(()=>{
-        lookUpByUsername(article_id).then((rows)=>{
-            const {author} = rows[0]
-            comment.article_id = article_id
-            comment.author = author
-            delete comment.username
-            insertCommentByArticleId(comment)
-            .then((newComment)=>{
-                res.status(201).send({newComment: newComment} )
-            })
+    // checkArticleExists(article_id).then(()=>{
+    //     lookUpByUsername(article_id).then((rows)=>{
+    //         const {author} = rows[0]
+    //         comment.article_id = article_id
+    //         comment.author = author
+    //         delete comment.username
+    //         insertCommentByArticleId(comment)
+    //         .then((newComment)=>{
+    //             res.status(201).send({newComment: newComment} )
+    //         })
+    //     })
+    // }).catch((err)=>{
+    //     next(err)
+    // })
+    checkArticleExists(article_id)
+        .then(() => {
+            const newComment = {
+                article_id,
+                body,
+                author
+            };
+            return insertCommentByArticleId(newComment);
         })
-    }).catch((err)=>{
-        next(err)
-    })
+        .then((newComment) => {
+            res.status(201).json({ newComment });
+        })
+        .catch((err) => {
+            next(err);
+        }); 
 }
 
 exports.deleteCommentById = (req, res, next) => {
