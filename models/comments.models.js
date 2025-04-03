@@ -1,11 +1,15 @@
 const db = require('../db/connection')
 
+// `SELECT * FROM comments 
+// JOIN articles ON comments.article_id = articles.article_id
+// WHERE articles.article_id = $1
+// ORDER BY articles.created_at DESC`
 exports.fetchCommentsByArticleId = (id) => {
-    return db.query(`SELECT * FROM comments 
-        JOIN articles ON comments.article_id = articles.article_id
-        WHERE articles.article_id = $1
-        ORDER BY articles.created_at DESC`, [id])
+    return db.query(
+        `SELECT * FROM comments WHERE article_id = $1 ORDER by created_at DESC`
+        , [id])
     .then(({rows})=>{
+        console.log(rows)
         return rows
     })
 }
